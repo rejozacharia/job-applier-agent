@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*build*/
+*dist*/
+*.egg-info/
+*.spec
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+
+# Environment variables
+.env
+
+# IDE / Editor specific
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test output
+test_output/
+
+
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+
+
+#Project Plan
+PLAN.MD
+
+# ...but do track these 
+!build.spec
+!.env.template

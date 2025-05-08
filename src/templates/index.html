@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Job Agent{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1 class="mb-4">Job Application Dashboard</h1>
+
+        <!-- Submit New Application Form -->
+        <div class="card mb-4">
+            <div class="card-header">Start New Application</div>
+            <div class="card-body">
+                <form action="{{ url_for("start_application") }}" method="post">
+                    <div class="mb-3">
+                        <label for="jobUrl" class="form-label">Job Application URL</label>
+                        <input type="url" class="form-control" id="jobUrl" name="job_url" placeholder="https://www.example.com/careers/job/123" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Application Status Overview -->
+        <div class="card">
+            <div class="card-header">Application Status</div>
+            <div class="card-body">
+                <p>Application status overview will be displayed here. (Requires backend integration)</p>
+                <!-- Example Table Structure (to be populated dynamically) -->
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Job Title</th>
+                            <th scope="col">Company</th>
+                            <th scope="col">URL</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Started</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Placeholder row -->
+                        <tr>
+                            <td>Software Engineer</td>
+                            <td>Example Corp</td>
+                            <td><a href="#">link</a></td>
+                            <td><span class="badge bg-warning text-dark">Pending Review</span></td>
+                            <td>2025-05-01 01:00</td>
+                            <td><a href="#" class="btn btn-sm btn-info">Details</a></td>
+                        </tr>
+                        <tr>
+                            <td>Data Analyst</td>
+                            <td>Another Inc</td>
+                            <td><a href="#">link</a></td>
+                            <td><span class="badge bg-danger">Failed</span></td>
+                            <td>2025-04-30 15:30</td>
+                            <td><a href="#" class="btn btn-sm btn-info">Details</a></td>
+                        </tr>
+                        <!-- More rows will be added dynamically -->
+                    </tbody>
+                </table>
+                <a href="{{ url_for("logs") }}" class="btn btn-secondary">View All Logs</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

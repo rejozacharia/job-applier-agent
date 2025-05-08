@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Application Logs - Job Agent{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="mb-4">Application Logs</h1>
+
+        <div class="card">
+            <div class="card-header">Detailed Log History</div>
+            <div class="card-body">
+                <p>Showing detailed logs for all application attempts.</p>
+                <!-- Add filtering/sorting options here later -->
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Timestamp</th>
+                            <th scope="col">Application ID</th>
+                            <th scope="col">Job Title/URL</th>
+                            <th scope="col">Level</th>
+                            <th scope="col">Message</th>
+                            <!-- <th scope="col">Screenshot</th> -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Placeholder Log Entries (to be populated dynamically) -->
+                        <tr>
+                            <td>2025-05-01 01:15:30</td>
+                            <td>app_123</td>
+                            <td>Software Engineer @ Example Corp</td>
+                            <td><span class="badge bg-info text-dark">INFO</span></td>
+                            <td>Starting application process for job URL: ...</td>
+                        </tr>
+                        <tr>
+                            <td>2025-05-01 01:15:45</td>
+                            <td>app_123</td>
+                            <td>Software Engineer @ Example Corp</td>
+                            <td><span class="badge bg-success">SUCCESS</span></td>
+                            <td>Detected platform: Workday</td>
+                        </tr>
+                        <tr>
+                            <td>2025-05-01 01:16:00</td>
+                            <td>app_123</td>
+                            <td>Software Engineer @ Example Corp</td>
+                            <td><span class="badge bg-info text-dark">INFO</span></td>
+                            <td>Attempting login with default credentials...</td>
+                        </tr>
+                         <tr>
+                            <td>2025-05-01 01:16:10</td>
+                            <td>app_123</td>
+                            <td>Software Engineer @ Example Corp</td>
+                            <td><span class="badge bg-warning text-dark">WARN</span></td>
+                            <td>Default password failed. Generating new password.</td>
+                        </tr>
+                         <tr>
+                            <td>2025-05-01 01:17:00</td>
+                            <td>app_123</td>
+                            <td>Software Engineer @ Example Corp</td>
+                            <td><span class="badge bg-info text-dark">INFO</span></td>
+                            <td>Filling personal information...</td>
+                        </tr>
+                        <tr>
+                            <td>2025-05-01 01:18:00</td>
+                            <td>app_123</td>
+                            <td>Software Engineer @ Example Corp</td>
+                            <td><span class="badge bg-warning text-dark">PENDING</span></td>
+                            <td>Application ready for review. Manual submission required.</td>
+                        </tr>
+                         <tr>
+                            <td>2025-04-30 15:30:15</td>
+                            <td>app_456</td>
+                            <td>Data Analyst @ Another Inc</td>
+                            <td><span class="badge bg-info text-dark">INFO</span></td>
+                            <td>Starting application process...</td>
+                        </tr>
+                         <tr>
+                            <td>2025-04-30 15:31:00</td>
+                            <td>app_456</td>
+                            <td>Data Analyst @ Another Inc</td>
+                            <td><span class="badge bg-danger">ERROR</span></td>
+                            <td>Failed to find login button. Page structure may have changed.</td>
+                        </tr>
+                        <!-- More log entries will be added dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}User Profile - Job Agent{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1 class="mb-4">User Profile</h1>
+
+        <div class="card">
+            <div class="card-header">Manage Your Information</div>
+            <div class="card-body">
+                <form action="{{ url_for('update_profile') }}" method="post" enctype="multipart/form-data">
+                    <!-- Resume Upload -->
+                    <div class="mb-3">
+                        <label for="resumeFile" class="form-label">Resume (PDF or DOCX)</label>
+                        <input class="form-control" type="file" id="resumeFile" name="resume_file" accept=".pdf,.docx">
+                        <div class="form-text">Upload your latest resume. This will be used for parsing information and attaching to applications.</div>
+                        <!-- Display current file if exists -->
+                        {% if current_resume %}
+                            <p class="mt-2">Current file: {{ current_resume }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- LinkedIn URL -->
+                    <div class="mb-3">
+                        <label for="linkedinUrl" class="form-label">Public LinkedIn Profile URL</label>
+                        <input type="url" class="form-control" id="linkedinUrl" name="linkedin_url" placeholder="https://www.linkedin.com/in/yourprofile" value="{{ profile_data.linkedin_url if profile_data else '' }}">
+                        <div class="form-text">The agent will attempt to parse information from this public profile.</div>
+                    </div>
+
+                    <!-- Personal Website URL -->
+                    <div class="mb-3">
+                        <label for="websiteUrl" class="form-label">Personal Website/Portfolio URL</label>
+                        <input type="url" class="form-control" id="websiteUrl" name="website_url" placeholder="https://www.yourwebsite.com" value="{{ profile_data.website_url if profile_data else '' }}">
+                        <div class="form-text">Optional. Provide a link to your personal site if relevant.</div>
+                    </div>
+
+                    <!-- Default Login Credentials -->
+                    <h5 class="mt-4">Default Login Credentials</h5>
+                    <div class="mb-3">
+                        <label for="defaultEmail" class="form-label">Default Email/Username</label>
+                        <input type="email" class="form-control" id="defaultEmail" name="default_email" placeholder="your.email@example.com" value="{{ profile_data.default_email if profile_data else '' }}">
+                        <div class="form-text">Email address to use for creating accounts or logging in.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="passwordStrategy" class="form-label">Password Strategy</label>
+                        <select class="form-select" id="passwordStrategy" name="password_strategy">
+                            <option value="generate" {% if profile_data and profile_data.password_strategy == 'generate' %}selected{% endif %}>Generate and log a new password if needed</option>
+                            <option value="ask" {% if profile_data and profile_data.password_strategy == 'ask' %}selected{% endif %}>Ask me if default password fails (Not implemented yet)</option>
+                            <!-- Add option for user to provide a default password? Maybe too insecure. -->
+                        </select>
+                        <div class="form-text">How to handle passwords for new accounts or failed logins. Currently, only 'generate' is supported.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save Profile</button>
+<a href="{{ url_for('resolve_conflicts') }}" class="btn btn-info ms-2">Review & Resolve Conflicts</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

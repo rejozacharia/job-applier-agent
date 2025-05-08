@@ -1,0 +1,90 @@
+{% extends "templates/base.html" %}
+
+{% block title %}Resolve Profile Conflicts - Job Application Agent{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Resolve Profile Data Conflicts</h2>
+    <p>Review the information gathered from your resume, web profiles, and saved data. Select the correct information where discrepancies are found.</p>
+
+    {% if not conflicts and consolidated_data %}
+        <div class="alert alert-success" role="alert">
+            No immediate conflicts detected based on current rules. You can still review and update your primary information.
+        </div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('resolve_conflicts') }}">
+        
+        <!-- Email Conflicts/Selection -->
+        {% if consolidated_data and 'emails' in consolidated_data and consolidated_data.emails %}
+        <div class="card mb-3">
+            <div class="card-header">
+                Email Addresses
+            </div>
+            <div class="card-body">
+                <p>The following email addresses were found. Please select your primary email for applications.</p>
+                {% for email_conflict in conflicts if email_conflict.field == 'email' %}
+                    <div class="alert alert-warning">
+                        <strong>Conflict:</strong> {{ email_conflict.message }}
+                        <br>Current DB Email: <code>{{ email_conflict.db_value if email_conflict.db_value else "Not set" }}</code>
+                        <br>Other Emails Found: <code>{{ email_conflict.other_values|join(', ') }}</code>
+                    </div>
+                {% endfor %}
+                
+                <div class="form-group">
+                    <label for="chosen_email"><strong>Primary Email:</strong></label>
+                    <select class="form-control" id="chosen_email" name="chosen_email">
+                        {% for email in consolidated_data.emails %}
+                            <option value="{{ email }}" {% if profile_data and profile_data.default_email == email %}selected{% endif %}>
+                                {{ email }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        {% elif profile_data and profile_data.default_email %}
+         <div class="card mb-3">
+            <div class="card-header">Email Address</div>
+            <div class="card-body">
+                <p>Current primary email: <code>{{ profile_data.default_email }}</code>. No other emails found by consolidator.</p>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-info">No email information found by the consolidator. You can set it in your main profile.</div>
+        {% endif %}
+
+        <!-- Placeholder for Phone Conflicts/Selection -->
+        {% if consolidated_data and 'phones' in consolidated_data and consolidated_data.phones %}
+        <div class="card mb-3">
+            <div class="card-header">
+                Phone Numbers
+            </div>
+            <div class="card-body">
+                <p>The following phone numbers were found. Please select your primary phone number.</p>
+                <!-- Add conflict display logic similar to email if implemented in consolidator -->
+                <div class="form-group">
+                    <label for="chosen_phone"><strong>Primary Phone:</strong> (Not yet saved to DB)</label>
+                    <select class="form-control" id="chosen_phone" name="chosen_phone">
+                        {% for phone in consolidated_data.phones %}
+                            <option value="{{ phone }}">
+                                {{ phone }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <small class="form-text text-muted">Note: Saving chosen phone number is not yet implemented in the backend.</small>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Placeholder for other fields like LinkedIn URL, Website URL, Name, Skills, Experience etc. -->
+        <!-- These would require more complex UI elements for resolution -->
+
+        <hr>
+        <button type="submit" class="btn btn-primary">Save Resolved Data</button>
+        <a href="{{ url_for('profile') }}" class="btn btn-secondary">Back to Profile</a>
+    </form>
+
+</div>
+{% endblock %}
