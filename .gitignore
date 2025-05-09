@@ -31,7 +31,8 @@ test_output/
 .DS_Store
 Thumbs.db
 
-
+#logg
+job_agent.log
 
 #Project Plan
 PLAN.MD

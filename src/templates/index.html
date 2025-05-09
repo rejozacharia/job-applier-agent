@@ -11,12 +11,12 @@
         <div class="card mb-4">
             <div class="card-header">Start New Application</div>
             <div class="card-body">
-                <form action="{{ url_for("start_application") }}" method="post">
+                <form action="{{ url_for("apply") }}" method="post">
                     <div class="mb-3">
-                        <label for="jobUrl" class="form-label">Job Application URL</label>
-                        <input type="url" class="form-control" id="jobUrl" name="job_url" placeholder="https://www.example.com/careers/job/123" required>
+                        <label for="jobUrlsBatch" class="form-label">Job Application URLs (one per line)</label>
+                        <textarea class="form-control" id="jobUrlsBatch" name="job_urls_batch" rows="5" placeholder="https://www.example.com/careers/job/123&#x0a;https://www.linkedin.com/jobs/view/456" required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">Apply</button>
+                    <button type="submit" class="btn btn-primary">Queue Applications</button>
                 </form>
             </div>
         </div>
@@ -25,41 +25,53 @@
         <div class="card">
             <div class="card-header">Application Status</div>
             <div class="card-body">
-                <p>Application status overview will be displayed here. (Requires backend integration)</p>
-                <!-- Example Table Structure (to be populated dynamically) -->
-                <table class="table table-striped">
+                {% if applications %}
+                <table class="table table-striped table-hover">
                     <thead>
                         <tr>
+                            <th scope="col">ID</th>
                             <th scope="col">Job Title</th>
                             <th scope="col">Company</th>
                             <th scope="col">URL</th>
                             <th scope="col">Status</th>
-                            <th scope="col">Started</th>
-                            <th scope="col">Actions</th>
+                            <th scope="col">Started (UTC)</th>
+                            <th scope="col">Last Log</th>
+                            <!-- <th scope="col">Actions</th> -->
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Placeholder row -->
+                        {% for app in applications %}
                         <tr>
-                            <td>Software Engineer</td>
-                            <td>Example Corp</td>
-                            <td><a href="#">link</a></td>
-                            <td><span class="badge bg-warning text-dark">Pending Review</span></td>
-                            <td>2025-05-01 01:00</td>
-                            <td><a href="#" class="btn btn-sm btn-info">Details</a></td>
+                            <td>{{ app.id }}</td>
+                            <td>{{ app.job_title if app.job_title else 'N/A' }}</td>
+                            <td>{{ app.company_name if app.company_name else 'N/A' }}</td>
+                            <td><a href="{{ app.job_url }}" target="_blank" title="{{ app.job_url }}">{{ app.job_url[:40] }}{% if app.job_url|length > 40 %}...{% endif %}</a></td>
+                            <td>
+                                {% set status_class = 'secondary' %}
+                                {% if app.status == 'processing' %}
+                                    {% set status_class = 'primary' %}
+                                {% elif app.status == 'queued' %}
+                                    {% set status_class = 'info text-dark' %}
+                                {% elif app.status in ['failed', 'failed_final', 'failed_worker_exception'] %}
+                                    {% set status_class = 'danger' %}
+                                {% elif app.status in ['submitted_manual', 'completed_manual', 'applied_auto'] %}
+                                    {% set status_class = 'success' %}
+                                {% elif app.status == 'pending_review' %}
+                                    {% set status_class = 'warning text-dark' %}
+                                {% endif %}
+                                <span class="badge bg-{{ status_class }}">{{ app.status | replace('_', ' ') | title }}</span>
+                            </td>
+                            <td>{{ app.timestamp_started.strftime('%Y-%m-%d %H:%M:%S') if app.timestamp_started else 'N/A' }}</td>
+                            <td class="small" title="{{ app.last_log_message }}">{{ app.last_log_message[:60] if app.last_log_message else 'No logs yet.' }}{% if app.last_log_message and app.last_log_message|length > 60 %}...{% endif %}</td>
+                            <!-- <td><a href="#" class="btn btn-sm btn-info disabled">Details (TBD)</a></td> -->
                         </tr>
-                        <tr>
-                            <td>Data Analyst</td>
-                            <td>Another Inc</td>
-                            <td><a href="#">link</a></td>
-                            <td><span class="badge bg-danger">Failed</span></td>
-                            <td>2025-04-30 15:30</td>
-                            <td><a href="#" class="btn btn-sm btn-info">Details</a></td>
-                        </tr>
-                        <!-- More rows will be added dynamically -->
+                        {% endfor %}
                     </tbody>
                 </table>
-                <a href="{{ url_for("logs") }}" class="btn btn-secondary">View All Logs</a>
+                {% else %}
+                <p class="text-muted">No applications found or submitted yet.</p>
+                {% endif %}
+                <a href="{{ url_for("logs") }}" class="btn btn-secondary mt-3">View All Logs</a>
             </div>
         </div>
 

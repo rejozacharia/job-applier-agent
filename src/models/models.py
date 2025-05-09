@@ -25,6 +25,14 @@ class Application(db.Model):
     detected_platform = db.Column(db.String(50), nullable=True) # e.g., Workday, Greenhouse, Lever, Unknown
     timestamp_started = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     timestamp_ended = db.Column(db.DateTime, nullable=True)
+    priority = db.Column(db.Integer, default=10)  # Lower numbers are higher priority
+    source_site = db.Column(db.String(255), nullable=True)
+    search_criteria_used = db.Column(db.Text, nullable=True)
+    crawl_timestamp = db.Column(db.DateTime, nullable=True)
+    last_attempted_at = db.Column(db.DateTime, nullable=True)
+    retry_count = db.Column(db.Integer, default=0)
+    max_retries = db.Column(db.Integer, default=2) # Default max retries
+    error_details = db.Column(db.Text, nullable=True) # For storing detailed error messages/stack traces
     # Foreign key to link logs might be complex if logs are numerous.
     # Storing key info here might be simpler for dashboard view.
     last_log_message = db.Column(db.Text, nullable=True)
@@ -42,3 +50,15 @@ class Log(db.Model):
 
     application = db.relationship("Application", backref=db.backref("logs", lazy=True, cascade="all, delete-orphan"))
 
+
+class GenAIConfig(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    provider_name = db.Column(db.String(50), nullable=False)  # e.g., "gemini", "ollama", "openrouter"
+    # api_key is now stored in .env file
+    model_name = db.Column(db.String(100), nullable=True)
+    base_url = db.Column(db.String(255), nullable=True)  # Primarily for Ollama
+    is_enabled = db.Column(db.Boolean, default=False)
+    purpose = db.Column(db.String(100), nullable=False)  # e.g., "cover_letter", "form_fill_assist"
+
+    def __repr__(self):
+        return f"&lt;GenAIConfig {self.provider_name} ({self.purpose})&gt;"
